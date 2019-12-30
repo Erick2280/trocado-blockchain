@@ -2,8 +2,11 @@
   "name": "trocado-blockchain",
   "version": "1.0.0",
   "description": "A simple blockhain implementation in TS",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
+    "build": "tsc",
+    "prestart": "npm run build",
+    "start": "node .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +18,18 @@
   "bugs": {
     "url": "https://github.com/Erick2280/trocado-blockchain/issues"
   },
-  "homepage": "https://github.com/Erick2280/trocado-blockchain#readme"
+  "homepage": "https://github.com/Erick2280/trocado-blockchain#readme",
+  "devDependencies": {
+    "typescript": "^3.7.4"
+  },
+  "dependencies": {
+    "@types/cli-color": "^0.3.30",
+    "@types/express": "^4.17.2",
+    "@types/node": "^13.1.2",
+    "@types/sha.js": "^2.4.0",
+    "cli-color": "^2.0.0",
+    "express": "^4.17.1",
+    "sha.js": "^2.4.11",
+    "uuidv4": "^6.0.0"
+  }
 }

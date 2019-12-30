@@ -1,5 +1,7 @@
 import { Transaction } from './transaction'
 
+import shajs from 'sha.js'
+
 export class Block {
     private _index: number;
     private _timestamp: string;
@@ -19,7 +21,7 @@ export class Block {
     }
     
     public seal() {
-        if (!this._sealed) {
+        if (this._sealed) {
             throw new Error ('blockIsAlreadySealed')
         } else {
             this._hash = this.generateHash();
@@ -27,7 +29,7 @@ export class Block {
         }
     }
     
-    public testSeal(): boolean {
+    public checkSeal(): boolean {
         return this._hash == this.generateHash();
     }
     
@@ -41,10 +43,7 @@ export class Block {
             proof: this._proof
         }
         
-        hash = JSON.stringify(data);
-        
-        // TO-DO: implementar o hashing
-        
+        hash = shajs('sha256').update(JSON.stringify(data, Object.keys(data).sort())).digest('hex')
         return hash;
     }
     
@@ -69,7 +68,13 @@ export class Block {
     }
 
     public get hash(): string {
-        return this._hash;
+        if (!this._sealed) {
+            throw new Error ('blockIsNotSealed')
+        } else if (this.checkSeal()) {
+            throw new Error ('blockSealDoesNotMatch')
+        } else {
+            return this._hash;
+        }
     }
 
     public get sealed(): boolean {
