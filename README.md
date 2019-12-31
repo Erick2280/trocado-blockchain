@@ -13,11 +13,14 @@ Primeiro, no diretório raiz do projeto, execute o seguinte comando no terminal 
 
 Depois, execute:
 
-        npm start
+        npm start -- [PORTA]
+
+Sendo `[PORTA]` o número da porta que o servidor irá escutar. Caso nenhum número seja fornecido, o servidor escutará a porta 8080.
 
 ## TO-DO
  
  - Documentar
+ - Organizar comentários
  - Configurar tslint
  - Configurar tsconfig (para gerar arquivos mais otimizados)
  - Interface
@@ -29,4 +32,5 @@ Depois, execute:
  - Persistência de dados
  - Verificar transações
  - - Verificar se o nó pode transferir o valor
+ - - Verificar se o nó é o `sender` da transação
  - Substituir clc.* por variáveis predefinidas

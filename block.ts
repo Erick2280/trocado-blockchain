@@ -11,21 +11,51 @@ export class Block {
     private _sealed: boolean;
     private _proof: number;
     
-    constructor (index: number, timestamp: string, transactions: Transaction[], previousHash: string, proof: number) {
+    constructor (index: number = 0, timestamp: string = new Date().toISOString(), transactions: Transaction[] = [], previousHash: string = '1', proof: number = 100) {
         this._index = index;
         this._timestamp = timestamp;
         this._transactions = transactions;
         this._previousHash = previousHash;
         this._proof = proof;
         this._sealed = false;
+        this._hash = '';
     }
     
     public seal() {
-        if (this._sealed) {
-            throw new Error ('blockIsAlreadySealed')
-        } else {
-            this._hash = this.generateHash();
-            this._sealed = true;
+        if (this._sealed)
+                throw new Error ('blockIsAlreadySealed');
+        if (
+            this._index == null ||
+            this._timestamp == null ||
+            this._transactions == null ||
+            this._previousHash == null ||
+            this._proof == null)
+                throw new Error ('blockHasNullProperty');
+        
+        this._hash = this.generateHash();
+        this._sealed = true;
+        
+    }
+
+    public fromObject(block) {
+
+        const properties = ['_index', '_timestamp', '_transactions', '_previousHash', '_hash', '_sealed', '_proof']
+        for (let property of properties) {
+            if (!block.hasOwnProperty(property))
+                throw new Error ('blockPropertyMissingOnCopy')
+            if (typeof block[property] !== typeof this[property])
+                throw new Error ('blockPropertyFailedOnTypeCheckingOnCopy')
+        }
+
+        this._index = block._index;
+        this._timestamp = block._timestamp;
+        this._previousHash = block._previousHash;
+        this._proof = block._proof;
+        this._sealed = block._sealed;
+        this._hash = block._hash;
+
+        for (let transaction of block._transactions) {
+            this._transactions.push(new Transaction(transaction._sender, transaction._receiver, transaction._amount))
         }
     }
     
@@ -68,13 +98,12 @@ export class Block {
     }
 
     public get hash(): string {
-        if (!this._sealed) {
+        if (!this._sealed)
             throw new Error ('blockIsNotSealed')
-        } else if (!this.checkSeal()) {
+        if (!this.checkSeal())
             throw new Error ('blockSealDoesNotMatch')
-        } else {
-            return this._hash;
-        }
+        
+        return this._hash;
     }
 
     public get sealed(): boolean {
