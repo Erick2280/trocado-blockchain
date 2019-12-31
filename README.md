@@ -1,4 +1,4 @@
-# Trocado
+# Trocado Blockchain
 
 _Uma implementação simples de blockchain em TypeScript_  
 _Baseado em https://github.com/dvf/blockchain_
