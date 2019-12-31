@@ -70,7 +70,7 @@ export class Block {
     public get hash(): string {
         if (!this._sealed) {
             throw new Error ('blockIsNotSealed')
-        } else if (this.checkSeal()) {
+        } else if (!this.checkSeal()) {
             throw new Error ('blockSealDoesNotMatch')
         } else {
             return this._hash;

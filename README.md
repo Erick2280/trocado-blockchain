@@ -3,10 +3,30 @@
 _Uma implementação simples de blockchain em TypeScript_  
 _Baseado em https://github.com/dvf/blockchain_
 
+## Executando
+
+Para executar localmente, você precisará da versão LTS do [Node.js](https://nodejs.org) mais recente.
+
+Primeiro, no diretório raiz do projeto, execute o seguinte comando no terminal para instalar as dependências necessárias:
+
+        npm install
+
+Depois, execute:
+
+        npm start
+
 ## TO-DO
  
+ - Documentar
  - Configurar tslint
  - Configurar tsconfig (para gerar arquivos mais otimizados)
+ - Interface
+ - Argumentos (porta)
+ - Melhorar tratamento de erro
  - Separar a lógica de conexão entre pares
- - Documentar
+ - - Salvar não só o endereço do par, mas o seu UUID
+ - - Construir base de dados de trocados em posse de cada nó a partir do blockchain
  - Persistência de dados
+ - Verificar transações
+ - - Verificar se o nó pode transferir o valor
+ - Substituir clc.* por variáveis predefinidas

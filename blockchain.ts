@@ -7,13 +7,15 @@ export class Blockchain {
     private _chain: Block[];
     private _pendingTransactions: Transaction[];
     private _peers: string[]; 
+    private _peerUUID: string;
 
-    constructor() {
+    constructor(peerUUID: string) {
         this._chain = [];
         this._pendingTransactions = [];
         this._peers = [];
+        this._peerUUID = peerUUID;
         
-        this.newBlock(100);
+        this.addBlock(100);
     }
     
     public addPeer(peer: string) {
@@ -77,7 +79,7 @@ export class Blockchain {
     }
 
     // Gera novo bloco
-    public newBlock(proof: number): Block {
+    public addBlock(proof: number): Block {
         
         let newBlock = new Block (
             this._chain.length,
@@ -91,7 +93,7 @@ export class Blockchain {
         
         if (!newBlock.checkSeal())
             throw new Error ('blockSealCheckingFailed')
-        else if (newBlock.index !== 0 && !this.checkProofOfWork(this._chain[this._chain.length - 1].proof, newBlock.proof, this._chain[this._chain.length - 1].previousHash))
+        else if (newBlock.index !== 0 && !this.checkProofOfWork(this._chain[this._chain.length - 1].proof, newBlock.proof, this._chain[this._chain.length - 1].hash))
             throw new Error ('blockProofCheckingFailed')
         else {
             this._chain.push(newBlock);
@@ -102,7 +104,7 @@ export class Blockchain {
     }
 
     // Registra uma nova transação para ir ao próximo bloco minerado   
-    public newTransaction(transaction: Transaction): number {
+    public addTransaction(transaction: Transaction): number {
         this._pendingTransactions.push(transaction);
 
         return this.lastBlock().index + 1
@@ -138,8 +140,37 @@ export class Blockchain {
         return hash.startsWith('0000')
     }
 
+    // Minera um bloco
+    public mine(): Block {
+
+        // Calcula um prova de trabalho para o último bloco
+        let lastBlock = this.lastBlock();
+        let proof = this.generateProofOfWork(lastBlock);
+
+        // Já que a prova de trabalho foi realizada, receberemos um
+        // prêmio: 100 trocados. O remetente é 'mine'.
+        let mineTransaction  = new Transaction (
+            'mine',
+            this._peerUUID,
+            100);
+        this.addTransaction(mineTransaction)
+
+        // Gera o novo bloco e o adiciona na cadeia
+        let newBlock = this.addBlock(proof);
+
+        return newBlock;
+    }
+
     public get chain() {
         return this._chain;
+    }
+
+    public get peerUUID() {
+        return this._peerUUID;
+    }
+
+    public get pendingTransactions() {
+        return this._pendingTransactions;
     }
 
 }
