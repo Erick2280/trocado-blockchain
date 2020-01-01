@@ -96,19 +96,22 @@ export class Blockchain {
         let newChain: Block[];
         let peerResponses: Promise<any>[] = [];
 
+        // Cria uma requisição para cada par do array de pares registrados
         for (let peer of this._peers) {
-            peerResponses.push(fetch(`http://${peer}/chain`)) // Cria uma requisição para cada par do array de pares registrados
+            peerResponses.push(fetch(`http://${peer}/chain`))
         }
 
-        peerResponses = peerResponses.map(p => p.catch(e => e)) // Ignora requisições com erro
+        // Ignora requisições com erro
+        peerResponses = peerResponses.map(p => p.catch(e => e))
 
         // Espera até que todas as requisições sejam concluídas
         await Promise.all(peerResponses).then(async responses => {
             for (let response of responses) {
-                let data = await response.json()
 
                 // Verifica as respostas de requisições realizadas aos pares
                 try {
+                    let data = await response.json()
+
                     // A requisição tem os dados necessários?
                     if (!(data.hasOwnProperty('chain') && data.hasOwnProperty('chainLength')))
                         throw new Error('responsePropertyMissing')
